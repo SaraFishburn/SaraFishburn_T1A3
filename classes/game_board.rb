@@ -14,7 +14,7 @@ class GameBoard
   def initialize(window, game_board_width = 20, game_board_height = 40)
     @window = window
     @game_board_width = game_board_width
-    @object_array = Array.new(game_board_height) { [0] * @game_board_width }
+    @object_array = Array.new(game_board_height + 4) { [0] * @game_board_width }
     @position = {
       x: 0,
       y: 0
