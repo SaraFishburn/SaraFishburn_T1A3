@@ -2,7 +2,7 @@ require_relative 'game_piece'
 
 class ZPiece < GamePiece
   def initialize(board, window)
-    @piece_array = [
+    @object_array = [
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [7, 7, 7, 7, 0, 0],

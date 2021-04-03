@@ -2,7 +2,7 @@ require_relative 'game_piece'
 
 class SPiece < GamePiece
   def initialize(board, window)
-    @piece_array = [
+    @object_array = [
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
       [0, 0, 5, 5, 5, 5],

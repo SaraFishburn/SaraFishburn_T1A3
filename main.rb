@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
 require 'curses'
-require_relative 'classes/i_piece'
-require_relative 'classes/j_piece'
-require_relative 'classes/l_piece'
-require_relative 'classes/o_piece'
-require_relative 'classes/s_piece'
-require_relative 'classes/t_piece'
-require_relative 'classes/z_piece'
+require_relative 'classes/game_board'
 
 Curses.curs_set(0)
 Curses.init_screen
@@ -15,10 +9,10 @@ Curses.start_color
 Curses.noecho
 
 controls = {
-  rotate: '↑',
-  left: '  ←',
-  right: ' →',
-  drop: '  ↓'
+  rotate: '  ↑',
+  left: '    ←',
+  right: '   →',
+  drop: '    ↓'
 }
 
 def setup_colors
@@ -30,7 +24,7 @@ def setup_colors
     5 => [183, 246, 175],
     6 => [175, 129, 228],
     7 => [231, 132, 186],
-    8 => [0, 0, 0],
+    8 => [0,   0,   0],
     9 => [255, 255, 255]
   }
 
@@ -59,12 +53,22 @@ begin
   # win.getch
 
   windows = {
-    score: Curses::Window.new(4, 14, 4, 4),
-    lines: Curses::Window.new(4, 14, 10, 4),
-    'top-ten' => Curses::Window.new(22, 14, 16, 4),
-    tetris: Curses::Window.new(40, 20, 4, 20),
-    next: Curses::Window.new(10, 14, 4, 42),
-    controls: Curses::Window.new(22, 14, 16, 42)
+    score_window: Curses::Window.new(4, 14, 4, 3),
+    score: Curses::Window.new(6, 16, 3, 2),
+
+    lines_window: Curses::Window.new(4, 14, 11, 3),
+    lines: Curses::Window.new(6, 16, 10, 2),
+
+    scoreboard_window: Curses::Window.new(22, 14, 18, 3),
+    scoreboard: Curses::Window.new(24, 16, 17, 2),
+
+    tetris_window: Curses::Window.new(40, 20, 4, 20),
+    tetris: Curses::Window.new(42, 22, 3, 19),
+
+    next_window: Curses::Window.new(11, 14, 4, 43),
+    next: Curses::Window.new(13, 16, 3, 42),
+
+    controls: Curses::Window.new(24, 16, 17, 42)
   }
 
   windows.each do |name, window|
@@ -75,12 +79,12 @@ begin
     window.addstr(name.upcase)
     window.refresh
   end
-
-  piece = TPiece.new([[0] * 20] * 40, windows[:tetris])
-  piece.draw_to_board
-  windows[:tetris].refresh
-
+  windows[:tetris_window].keypad true
+  windows[:tetris_window].nodelay = true
   display_controls(windows[:controls], controls)
+
+  game_board = GameBoard.new(windows[:tetris_window])
+  game_board.fall(windows[:next_window], windows[:lines_window])
 
   main_window.getch
 ensure
