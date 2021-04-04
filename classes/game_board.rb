@@ -39,7 +39,10 @@ class GameBoard
   end
 
   def calculate_level
-    @level = (@lines_cleared / 10.0).floor + 1 if @lines_cleared > 9
+    if @lines_cleared > 9
+      @level = (@lines_cleared / 10.0).floor + 1 
+    else @level = 1
+    end
   end
 
   def user_movement
@@ -111,7 +114,7 @@ class GameBoard
   end
 
   def stats(window, stat)
-    stat = (stat / 2).to_s
+    stat = stat.to_s
     window.erase
     window.setpos((window.maxy / 2), (window.maxx / 2) - (stat.length / 2))
     window.addstr(stat)
