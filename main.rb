@@ -52,39 +52,44 @@ begin
   main_window.refresh
   # win.getch
 
-  windows = {
-    score_window: Curses::Window.new(4, 14, 4, 3),
+  borders = {
     score: Curses::Window.new(6, 16, 3, 2),
-
-    lines_window: Curses::Window.new(4, 14, 11, 3),
-    lines: Curses::Window.new(6, 16, 10, 2),
-
-    scoreboard_window: Curses::Window.new(22, 14, 18, 3),
-    scoreboard: Curses::Window.new(24, 16, 17, 2),
-
-    tetris_window: Curses::Window.new(40, 20, 4, 20),
+    lvl: Curses::Window.new(5, 7, 10, 2),
+    lines: Curses::Window.new(5, 9, 10, 9),
+    scoreboard: Curses::Window.new(24, 16, 16, 2),
     tetris: Curses::Window.new(42, 22, 3, 19),
-
-    next_window: Curses::Window.new(11, 14, 4, 43),
-    next: Curses::Window.new(13, 16, 3, 42),
-
-    controls: Curses::Window.new(24, 16, 17, 42)
+    next: Curses::Window.new(12, 16, 3, 42),
+    controls: Curses::Window.new(24, 16, 16, 42)
   }
 
-  windows.each do |name, window|
+  borders.each do |name, window|
     window.attron(Curses.color_pair(8))
     name = name.to_s
     window.box('|', '-')
-    window.setpos(0, (window.maxx / 2).ceil - (name.length / 2.0).ceil)
+    window.setpos(0, (window.maxx / 2.0).ceil - (name.length / 2.0).ceil)
     window.addstr(name.upcase)
     window.refresh
   end
-  windows[:tetris_window].keypad true
-  windows[:tetris_window].nodelay = true
-  display_controls(windows[:controls], controls)
 
-  game_board = GameBoard.new(windows[:tetris_window])
-  game_board.fall(windows[:next_window], windows[:lines_window])
+  content = {
+    score_window: Curses::Window.new(4, 14, 4, 3),
+    lvl_window: Curses::Window.new(3, 5, 11, 3),
+    lines_window: Curses::Window.new(3, 7, 11, 10),
+    scoreboard_window: Curses::Window.new(22, 14, 17, 3),
+    tetris_window: Curses::Window.new(40, 20, 4, 20),
+    next_window: Curses::Window.new(10, 14, 4, 43)
+  }
+
+  content.each do |_name, window|
+    window.refresh
+  end
+
+  content[:tetris_window].keypad true
+  content[:tetris_window].nodelay = true
+  display_controls(borders[:controls], controls)
+
+  game_board = GameBoard.new(content[:tetris_window])
+  game_board.fall(content)
 
   main_window.getch
 ensure

@@ -14,7 +14,7 @@ class GameBoard
   def initialize(window, game_board_width = 20, game_board_height = 40)
     @window = window
     @game_board_width = game_board_width
-    @object_array = Array.new(game_board_height + 4) { [0] * @game_board_width }
+    @object_array = Array.new(game_board_height) { [0] * @game_board_width }
     @position = {
       x: 0,
       y: 0
@@ -39,7 +39,7 @@ class GameBoard
   end
 
   def calculate_level
-    @level = (@lines_cleared / 10) + 1
+    @level = (@lines_cleared / 10.0).floor + 1 if @lines_cleared > 9
   end
 
   def user_movement
@@ -56,9 +56,9 @@ class GameBoard
     end
   end
 
-  def fall(next_window, lines_window)
+  def fall(content)
     create_piece
-    display_next_piece(next_window)
+    display_next_piece(content[:next_window])
     loop do
       start_time = Time.now
       calculate_level
@@ -72,12 +72,13 @@ class GameBoard
       unless @in_play.move_down((Time.now - start_time) / @speed)
         assign_next_piece
         create_piece
-        display_next_piece(next_window)
-        break unless @in_play.is_valid_position?
+        display_next_piece(content[:next_window])
+        break if game_over
       end
       user_movement
       remove_lines
-      display_lines(lines_window)
+      stats(content[:lines_window], @lines_cleared)
+      stats(content[:lvl_window], @level)
 
       Curses.doupdate
 
@@ -109,11 +110,22 @@ class GameBoard
     next_window.noutrefresh
   end
 
-  def display_lines(lines_window)
-    lines = (@lines_cleared / 2).to_s
-    lines_window.erase
-    lines_window.setpos((lines_window.maxy / 2), (lines_window.maxx / 2) - (lines.length / 2).ceil)
-    lines_window.addstr("#{lines}, #{@level}")
-    lines_window.noutrefresh
+  def stats(window, stat)
+    stat = (stat / 2).to_s
+    window.erase
+    window.setpos((window.maxy / 2), (window.maxx / 2) - (stat.length / 2))
+    window.addstr(stat)
+    window.noutrefresh
+  end
+
+  def game_over
+    return false if @object_array[0].all?(&:zero?)
+
+    message = 'game over :('
+    @window.clear
+    @window.setpos(@window.maxy / 2 - 1, @window.maxx / 2 - message.length / 2)
+    @window.addstr(message)
+    @window.refresh
+    true
   end
 end

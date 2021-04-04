@@ -7,7 +7,7 @@ module Draw
   def draw
     @object_array.each_with_index do |row, y|
       row.each_with_index do |cell, x|
-        next if cell.zero?
+        next if cell.zero? || (position_y + y).negative?
 
         @window.attron(Curses.color_pair(cell))
         @window.setpos(position_y + y, @position[:x] + x)

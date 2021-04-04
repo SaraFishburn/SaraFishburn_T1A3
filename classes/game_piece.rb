@@ -8,7 +8,7 @@ class GamePiece
     @board = board
     @window = window
     @position = {
-      x: (@board[0].length / 2) - (((@object_array[0].length - 4) / 2 / 2.0).floor * 2),
+      x: (@board[0].length / 2) - ((@object_array[0].length / 2 / 2.0).floor * 2),
       y: 0
     }
   end
@@ -45,9 +45,9 @@ class GamePiece
   def is_valid_position?
     @object_array.each_with_index do |row, y|
       row.each_with_index do |cell, x|
-        next if cell.zero?
+        next if cell.zero? || (position_y + y).negative?
 
-        if (position_y + y).negative? || position_y + y >= @board.length ||
+        if position_y + y >= @board.length ||
            (@position[:x] + x).negative? || @position[:x] + x >= @board[0].length ||
            !@board[position_y + y][@position[:x] + x].zero?
           return false
