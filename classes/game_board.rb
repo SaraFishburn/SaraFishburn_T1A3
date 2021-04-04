@@ -19,8 +19,9 @@ class GameBoard
       x: 0,
       y: 0
     }
+    @score = 0
+    @level = 0
     @lines_cleared = 0
-    @level = 1
     @pieces = [IPiece, JPiece, LPiece, OPiece, SPiece, TPiece, ZPiece]
     assign_next_piece
     assign_next_piece
@@ -38,14 +39,7 @@ class GameBoard
     @next_piece = @pieces.sample
   end
 
-  def calculate_level
-    if @lines_cleared > 9
-      @level = (@lines_cleared / 10.0).floor + 1 
-    else @level = 1
-    end
-  end
-
-  def user_movement
+  def user_input
     key = @window.getch
     case key
     when Curses::KEY_LEFT
@@ -64,7 +58,6 @@ class GameBoard
     display_next_piece(content[:next_window])
     loop do
       start_time = Time.now
-      calculate_level
       @speed = (0.8 - ((@level - 1) * 0.007))**(@level - 1)
 
       @window.erase
@@ -78,10 +71,13 @@ class GameBoard
         display_next_piece(content[:next_window])
         break if game_over
       end
-      user_movement
+      user_input
       remove_lines
+      calculate_level
+      calculate_score
       stats(content[:lines_window], @lines_cleared)
       stats(content[:lvl_window], @level)
+      stats(content[:score_window], @score)
 
       Curses.doupdate
 
@@ -90,18 +86,33 @@ class GameBoard
   end
 
   def remove_lines
-    lines_to_delete = 0
-    deleted_indexes = []
+    @deleted_indexes = []
     @object_array.each_with_index do |line, i|
       next if line.include?(0)
 
-      lines_to_delete += 1
-      @lines_cleared += 1
-      deleted_indexes << i
+      @lines_cleared += 0.5
+      @deleted_indexes << i
     end
+    @deleted_indexes.reverse.each { |i| @object_array.delete_at(i) }
+    @object_array = Array.new(@deleted_indexes.length) { [0] * @game_board_width } + @object_array
+    @deleted_indexes
+  end
 
-    deleted_indexes.reverse.each { |i| @object_array.delete_at(i) }
-    @object_array = Array.new(lines_to_delete) { [0] * @game_board_width } + @object_array
+  def calculate_level
+    @level = (@lines_cleared / 10).floor
+  end
+
+  def calculate_score
+    case (@deleted_indexes.length / 2)
+    when 1
+      @score = 40 * (@level + 1)
+    when 2
+      @score = 100 * (@level + 1)
+    when 3
+      @score = 300 * (@level + 1)
+    when 4
+      @score = 1200 * (@level + 1)
+    end
   end
 
   def display_next_piece(next_window)
@@ -114,7 +125,7 @@ class GameBoard
   end
 
   def stats(window, stat)
-    stat = stat.to_s
+    stat = stat.to_i.to_s
     window.erase
     window.setpos((window.maxy / 2), (window.maxx / 2) - (stat.length / 2))
     window.addstr(stat)
