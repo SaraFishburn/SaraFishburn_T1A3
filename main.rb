@@ -30,7 +30,13 @@ def setup_colors
 
   color_pallette.each do |num, color|
     Curses.init_color(num, *color.map { |c| (c / 255.0 * 1000).to_i })
-    Curses.init_pair(num, num, num) if num < 8
+    next unless num < 8
+
+    Curses.init_pair(num, num, num)
+
+    opacity = 0.5
+    Curses.init_color(num + 10, *color.map { |c| ((c * opacity) / 255.0 * 1000).to_i })
+    Curses.init_pair(num + 10, num + 10, num + 10)
   end
   Curses.init_pair(8, 9, 8)
 end

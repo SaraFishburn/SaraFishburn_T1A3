@@ -27,8 +27,19 @@ class GameBoard
     assign_next_piece
   end
 
+  def calculate_ghost_piece
+    @ghost_piece = @in_play.class.new(@object_array, @window)
+    @ghost_piece.position[:x] = @in_play.position[:x]
+    @ghost_piece.position[:y] = @in_play.position[:y]
+    @ghost_piece.object_array = @in_play.object_array.map do |row|
+      row.map { |cell| cell.zero? ? 0 : cell + 10 }
+    end
+    @ghost_piece.hard_drop(main_piece: false)
+  end
+
   def create_piece
     @in_play = @current_piece.new(@object_array, @window)
+    calculate_ghost_piece
   end
 
   def assign_next_piece
@@ -44,12 +55,18 @@ class GameBoard
     case key
     when Curses::KEY_LEFT
       @in_play.move_left
+      calculate_ghost_piece
     when Curses::KEY_RIGHT
       @in_play.move_right
+      calculate_ghost_piece
     when Curses::KEY_UP
-      @in_play.rotate
+      @in_play.rotate_r
+      calculate_ghost_piece
+    when 'z'
+      @in_play.rotate_l
     when Curses::KEY_DOWN
-      @in_play.hard_drop
+      @in_play.position = @ghost_piece.position
+      @in_play.add_to_board
     end
   end
 
@@ -61,6 +78,7 @@ class GameBoard
       @speed = (0.8 - ((@level - 1) * 0.007))**(@level - 1)
 
       @window.erase
+      @ghost_piece.draw
       @in_play.draw
       draw
       @window.noutrefresh
@@ -116,7 +134,7 @@ class GameBoard
   end
 
   def display_next_piece(next_window)
-    next_window.clear
+    next_window.erase
     piece = @next_piece.new([[0] * next_window.maxx] * next_window.maxy, next_window)
     piece.position[:y] = (piece.board.length / 2) - (piece.object_array.length / 2)
     piece.position[:x] = (piece.board[0].length / 2) - (piece.object_array[0].length / 2)
