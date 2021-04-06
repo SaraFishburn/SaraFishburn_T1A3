@@ -11,7 +11,7 @@ class ZPiece < GamePiece
       [0, 0, 0, 0, 0, 0]
     ]
     super(board, window)
-    @position[:y] = -2
+    @position[:y] = 0
   end
 
   def wall_kick_data
