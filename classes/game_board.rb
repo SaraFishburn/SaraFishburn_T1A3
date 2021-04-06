@@ -64,6 +64,7 @@ class GameBoard
       calculate_ghost_piece
     when 'z'
       @in_play.rotate_l
+      calculate_ghost_piece
     when Curses::KEY_DOWN
       @in_play.position = @ghost_piece.position
       @in_play.add_to_board
@@ -123,13 +124,13 @@ class GameBoard
   def calculate_score
     case (@deleted_indexes.length / 2)
     when 1
-      @score = 40 * (@level + 1)
+      @score += 40 * (@level + 1)
     when 2
-      @score = 100 * (@level + 1)
+      @score += 100 * (@level + 1)
     when 3
-      @score = 300 * (@level + 1)
+      @score += 300 * (@level + 1)
     when 4
-      @score = 1200 * (@level + 1)
+      @score += 1200 * (@level + 1)
     end
   end
 

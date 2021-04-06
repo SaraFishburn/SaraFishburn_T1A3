@@ -9,7 +9,8 @@ Curses.start_color
 Curses.noecho
 
 controls = {
-  rotate: '  ↑',
+  'rotate r' => '↑',
+  'rotate l' => 'z',
   left: '    ←',
   right: '   →',
   drop: '    ↓'

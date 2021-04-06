@@ -11,29 +11,31 @@ class GamePiece
       x: (@board[0].length / 2) - ((@object_array[0].length / 2 / 2.0).floor * 2),
       y: 0
     }
-    spawn_state = [0, 0]
+    @rotation_state = [0, 0]
   end
 
   def rotate_r
+    original_state = @rotation_state.dup
     @object_array = @object_array.transpose.map(&:reverse)
-    @object_array = @object_array.transpose.reverse unless is_valid_position?
-    spawn_state[0] = spawn_state[1]
-    if spawn_state[1] < 3
-      spawn_state[1] += 1
-    else
-      spawn_state[1] = 0
-    end
+    @rotation_state[0] = @rotation_state[1]
+    @rotation_state[1] = (@rotation_state[1] + 1) % 4
+
+    return if check_wall_kick
+
+    @object_array = @object_array.transpose.reverse
+    @rotation_state = original_state
   end
 
   def rotate_l
+    original_state = @rotation_state.dup
     @object_array = @object_array.transpose.reverse
-    @object_array = @object_array.transpose.map(&:reverse) unless is_valid_position?
-    spawn_state[0] = spawn_state[1]
-    if spawn_state[1] < 3
-      spawn_state[1] -= 1
-    else
-      spawn_state[1] = 0
-    end
+    @rotation_state[0] = @rotation_state[1]
+    @rotation_state[1] = (@rotation_state[1] - 1) % 4
+
+    return if check_wall_kick
+
+    @object_array = @object_array.transpose.map(&:reverse)
+    @rotation_state = original_state
   end
 
   def move_left
@@ -73,6 +75,20 @@ class GamePiece
       end
     end
     true
+  end
+
+  def check_wall_kick
+    return true if is_valid_position?
+
+    wall_kick_data[@rotation_state[0]][@rotation_state[1]].each do |pair|
+      @position[:x] += pair[:x] * 2
+      @position[:y] += pair[:y] * 2
+      return true if is_valid_position?
+
+      @position[:x] -= pair[:x] * 2
+      @position[:y] -= pair[:y] * 2
+    end
+    false
   end
 
   def add_to_board
