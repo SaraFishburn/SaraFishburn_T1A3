@@ -8,6 +8,7 @@ require_relative 't_piece'
 require_relative 'z_piece'
 
 class GameBoard
+  # Draw module displays a given array to the tetris window
   include Draw
   attr_reader :object_array, :current_piece, :next_piece
 

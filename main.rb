@@ -9,17 +9,19 @@ Curses.init_screen
 Curses.start_color
 Curses.noecho
 
-# WINDOWS LAYOUT
 begin
+  # functions from curses_setup to initialize the curses display windows
   setup_colors
   setup_main_window
   border_windows
   content = content_windows
   display_controls
 
+  # Setup curses values for the tetris window
   content[:tetris_window].keypad true
   content[:tetris_window].nodelay = true
 
+  # Create GameBoard instance
   game_board = GameBoard.new(content[:tetris_window])
   game_board.fall(content)
 
