@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-require 'json'
-
-# Identify json file and parse contents
-file = './highscores.json'
-highscores = JSON.parse(File.read(file))
-
 # Method to check if the final score is high enough to place on the highscores board
 def places?(final_score, highscores)
   return true if final_score > highscores[-1]['score'].to_i

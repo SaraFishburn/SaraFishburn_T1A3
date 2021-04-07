@@ -59,6 +59,7 @@ def setup_main_window
   main_window.attron(Curses.color_pair(8))
   main_window.box('|', '-')
   main_window.refresh
+  main_window
 end
 
 # Method to initialize borders for all windows
@@ -102,7 +103,6 @@ def content_windows
     score_window: Curses::Window.new(4, 14, 4, 3),
     lvl_window: Curses::Window.new(3, 5, 11, 3),
     lines_window: Curses::Window.new(3, 7, 11, 10),
-    highscores_window: Curses::Window.new(22, 14, 17, 3),
     tetris_window: Curses::Window.new(40, 20, 4, 20),
     next_window: Curses::Window.new(10, 14, 4, 43)
   }
@@ -123,4 +123,15 @@ def display_controls
     control_window.addstr("#{action}:  #{key}")
   end
   control_window.refresh
+end
+
+def display_highscores(highscores_array)
+  highscores_window = border_windows[:highscores]
+
+  highscores_array.each_with_index do |hash, i|
+    highscores_window.setpos(2 + i * 2, 2)
+    highscores_window.setpos(2 + i * 2, 1) if i > 8
+    highscores_window.addstr("#{i + 1} #{hash['name']} #{hash['score'].rjust(6, ' ')}")
+  end
+  highscores_window.refresh
 end

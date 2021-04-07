@@ -89,6 +89,7 @@ class GameBoard
         assign_next_piece
         create_piece
         display_next_piece(content[:next_window])
+        game_over = !@object_array[0].all?(&:zero?)
         return @score if game_over
 
       end
@@ -151,16 +152,5 @@ class GameBoard
     window.setpos((window.maxy / 2), (window.maxx / 2) - (stat.length / 2))
     window.addstr(stat)
     window.noutrefresh
-  end
-
-  def game_over
-    return false if @object_array[0].all?(&:zero?)
-
-    message = 'game over :('
-    @window.clear
-    @window.setpos(@window.maxy / 2 - 1, @window.maxx / 2 - message.length / 2)
-    @window.addstr(message)
-    @window.refresh
-    true
   end
 end
