@@ -37,7 +37,7 @@ def setup_colors
 
     Curses.init_pair(num, num, num)
 
-    setup_ghost_colors
+    setup_ghost_colors(num, color)
   end
   # Set black background and white foreground color pair
   Curses.init_pair(8, 9, 8)

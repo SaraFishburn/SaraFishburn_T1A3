@@ -150,8 +150,8 @@ class GamePiece
       row.each_with_index do |cell, x|
         # Dont change value of the board cell of the value of the game piece array is 0
         next if cell.zero?
-        
-        #replace current game board cell with the corresponding game piece number
+
+        # replace current game board cell with the corresponding game piece number
         @board[position_y + y][@position[:x] + x] = cell
       end
     end
