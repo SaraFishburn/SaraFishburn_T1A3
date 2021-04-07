@@ -89,7 +89,8 @@ class GameBoard
         assign_next_piece
         create_piece
         display_next_piece(content[:next_window])
-        break if game_over
+        return @score if game_over
+
       end
       user_input
       remove_lines

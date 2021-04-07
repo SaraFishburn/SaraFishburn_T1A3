@@ -67,7 +67,7 @@ def border_windows
     score: Curses::Window.new(6, 16, 3, 2),
     lvl: Curses::Window.new(5, 7, 10, 2),
     lines: Curses::Window.new(5, 9, 10, 9),
-    scoreboard: Curses::Window.new(24, 16, 16, 2),
+    highscores: Curses::Window.new(24, 16, 16, 2),
     tetris: Curses::Window.new(42, 22, 3, 19),
     next: Curses::Window.new(12, 16, 3, 42),
     controls: Curses::Window.new(24, 16, 16, 42)
@@ -102,7 +102,7 @@ def content_windows
     score_window: Curses::Window.new(4, 14, 4, 3),
     lvl_window: Curses::Window.new(3, 5, 11, 3),
     lines_window: Curses::Window.new(3, 7, 11, 10),
-    scoreboard_window: Curses::Window.new(22, 14, 17, 3),
+    highscores_window: Curses::Window.new(22, 14, 17, 3),
     tetris_window: Curses::Window.new(40, 20, 4, 20),
     next_window: Curses::Window.new(10, 14, 4, 43)
   }
