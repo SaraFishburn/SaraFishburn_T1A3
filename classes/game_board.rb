@@ -51,7 +51,7 @@ class GameBoard
     @next_piece = @pieces.sample
   end
 
-  def user_input
+  def user_input(_content)
     key = @window.getch
     case key
     when Curses::KEY_LEFT
@@ -89,11 +89,11 @@ class GameBoard
         assign_next_piece
         create_piece
         display_next_piece(content[:next_window])
-        game_over = !@object_array[0].all?(&:zero?)
-        return @score if game_over
-
+        @game_over = !@object_array[0].all?(&:zero?)
+        return @score if @game_over
       end
-      user_input
+
+      user_input(content)
       remove_lines
       calculate_level
       calculate_score

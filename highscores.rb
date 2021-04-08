@@ -24,9 +24,9 @@ def find_position(final_score, highscores)
 end
 
 # Method to insert the final score into the highscores array and write to json file
-def insert_score(final_score, file, highscores)
+def insert_score(final_score, file, highscores, initials)
   # Insert the final score at the correct position in the array
-  highscores.insert(find_position(final_score, highscores), { 'name' => '---', 'score' => final_score.to_s })
+  highscores.insert(find_position(final_score, highscores), { 'name' => initials, 'score' => final_score.to_s })
 
   # Remove the last score on the board so the array only contains the top 10
   highscores.delete_at(-1)
@@ -43,3 +43,4 @@ def reset_json(file, highscores)
   # Write array to json file
   File.write(file, JSON.dump(highscores))
 end
+
