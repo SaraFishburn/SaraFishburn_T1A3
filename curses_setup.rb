@@ -19,11 +19,11 @@ end
 def controls
   # key: action, value: keyboard control
   {
-    'rotate r' => '↑',
-    'rotate l' => 'z',
-    'left' => '    ←',
-    'right' => '   →',
-    'drop' => '    ↓'
+    'ROTATE R' => '↑',
+    'ROTATE L' => 'z',
+    'LEFT' => '    ←',
+    'RIGHT' => '   →',
+    'DROP' => '    ↓'
   }
 end
 
@@ -58,7 +58,7 @@ def setup_main_window
   main_window = Curses::Window.new(48, 60, 0, 0)
   main_window.attron(Curses.color_pair(8))
   main_window.box('|', '-')
-  main_window.refresh
+  main_window.noutrefresh
   main_window
 end
 
@@ -68,10 +68,10 @@ def border_windows
     score: Curses::Window.new(6, 16, 3, 2),
     lvl: Curses::Window.new(5, 7, 10, 2),
     lines: Curses::Window.new(5, 9, 10, 9),
-    highscores: Curses::Window.new(24, 16, 16, 2),
+    highscores: Curses::Window.new(26, 16, 16, 2),
     tetris: Curses::Window.new(42, 22, 3, 19),
     next: Curses::Window.new(12, 16, 3, 42),
-    controls: Curses::Window.new(24, 16, 16, 42)
+    controls: Curses::Window.new(26, 16, 16, 42)
   }
 
   # For each window in the hash, setup borders
@@ -94,7 +94,7 @@ def setup_border_windows(name, window)
   window.setpos(0, (window.maxx / 2.0).ceil - (name.length / 2.0).ceil)
   window.addstr(name.upcase)
 
-  window.refresh
+  window.noutrefresh
 end
 
 # Method to initialize windows for content
@@ -103,12 +103,13 @@ def content_windows
     score_window: Curses::Window.new(4, 14, 4, 3),
     lvl_window: Curses::Window.new(3, 5, 11, 3),
     lines_window: Curses::Window.new(3, 7, 11, 10),
+    highscores_window: Curses::Window.new(24, 14, 17, 3),
     tetris_window: Curses::Window.new(40, 20, 4, 20),
     next_window: Curses::Window.new(10, 14, 4, 43)
   }
 
   content.each do |_name, window|
-    window.refresh
+    window.noutrefresh
   end
   content
 end
@@ -122,16 +123,25 @@ def display_controls
     control_window.setpos(2 + i * 2, 2)
     control_window.addstr("#{action}:  #{key}")
   end
-  control_window.refresh
+  control_window.noutrefresh
 end
 
+# Method to dsiplay the top 10 highest scores withing the highscores window
 def display_highscores(highscores_array)
-  highscores_window = border_windows[:highscores]
+  highscores_window = content_windows[:highscores_window]
+  # Set the color of the text to be white
+  highscores_window.attron(Curses.color_pair(8))
+  # Set headings for scores
+  highscores_window.setpos(1, 1)
+  highscores_window.addstr('# NAME SCORE')
 
+  # Loop through each hash in the highscores array
   highscores_array.each_with_index do |hash, i|
-    highscores_window.setpos(2 + i * 2, 2)
-    highscores_window.setpos(2 + i * 2, 1) if i > 8
+    highscores_window.setpos(4 + i * 2, 1)
+    # For the tenth ranking, move the curser one to the left so that the numbers line up on screen
+    highscores_window.setpos(4 + i * 2, 0) if i > 8
+    # Add name and score for each hash to the window
     highscores_window.addstr("#{i + 1} #{hash['name']} #{hash['score'].rjust(6, ' ')}")
   end
-  highscores_window.refresh
+  highscores_window.noutrefresh
 end
