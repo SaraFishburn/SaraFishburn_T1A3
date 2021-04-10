@@ -23,12 +23,15 @@ highscores = JSON.parse(File.read(file))
 
 begin
   # functions from curses_setup to initialize the curses display windows
+  reset_json(file, highscores)
   setup_colors
   main_window = setup_main_window
   border_windows
   content = content_windows
   display_controls
   display_highscores(highscores)
+
+ 
 
   # Setup curses values for the tetris window
   tetris_window = content[:tetris_window]
