@@ -48,14 +48,6 @@ class GameBoard
     @ghost_piece.hard_drop(main_piece: false)
   end
 
-  # Mthod to create the game piece that will be in play
-  def create_piece
-    @in_play = @current_piece.new(@object_array, @window)
-
-    # Create the ghost piece give the piece in play
-    calculate_ghost_piece
-  end
-
   # Method to randomly select another piece
   def assign_next_piece
     # Remove the current next_piece from the 'bag' so that it canot be selected again
@@ -67,6 +59,14 @@ class GameBoard
     # Assign new current piece and randomly select next piece from pieces array
     @current_piece = @next_piece
     @next_piece = @pieces.sample
+  end
+
+  # Method to create the game piece that will be in play
+  def create_piece
+    @in_play = @current_piece.new(@object_array, @window)
+
+    # Create the ghost piece give the piece in play
+    calculate_ghost_piece
   end
 
   # Method to determine actions given user input
@@ -87,41 +87,6 @@ class GameBoard
     end
     # calculate ghost piece after piece movement
     calculate_ghost_piece
-  end
-
-  def fall(content)
-    create_piece
-    display_next_piece(content[:next_window])
-    loop do
-      start_time = Time.now
-      @speed = (0.8 - ((@level - 1) * 0.007))**(@level - 1)
-
-      @window.erase
-      @ghost_piece.draw
-      @in_play.draw
-      draw
-      @window.noutrefresh
-
-      unless @in_play.move_down((Time.now - start_time) / @speed)
-        assign_next_piece
-        create_piece
-        display_next_piece(content[:next_window])
-        @game_over = !@object_array[0].all?(&:zero?)
-        return @score if @game_over
-      end
-
-      user_input
-      remove_lines
-      calculate_level
-      calculate_score
-      stats(content[:lines_window], @lines_cleared)
-      stats(content[:lvl_window], @level)
-      stats(content[:score_window], @score)
-
-      Curses.doupdate
-
-      sleep([0, (1 / 60) - (Time.now - start_time)].max)
-    end
   end
 
   # Method to remove solid lines from the board
@@ -170,6 +135,20 @@ class GameBoard
     end
   end
 
+  # Method to display the game stats to their respective windows
+  def stats(window, stat)
+    # Change stat to an integer and then into a string
+    stat = stat.to_i.to_s
+    window.erase
+
+    # Position stat number in the middle of its window
+    window.setpos((window.maxy / 2), (window.maxx / 2) - (stat.length / 2))
+
+    # Display stat in window
+    window.addstr(stat)
+    window.noutrefresh
+  end
+
   # Method to display the next piece in the next window
   def display_next_piece(next_window)
     # Remove current contents of next window
@@ -187,17 +166,43 @@ class GameBoard
     next_window.noutrefresh
   end
 
-  # Method to display the game stats to their respective windows
-  def stats(window, stat)
-    # Change stat to an integer and then into a string
-    stat = stat.to_i.to_s
-    window.erase
+  def calculate_speed
+    @speed = (0.8 - ((@level - 1) * 0.007))**(@level - 1)
+  end
 
-    # Position stat number in the middle of its window
-    window.setpos((window.maxy / 2), (window.maxx / 2) - (stat.length / 2))
+  def fall(content)
+    create_piece
+    display_next_piece(content[:next_window])
+    loop do
+      start_time = Time.now
+      
+      @window.erase
+      @ghost_piece.draw
+      @in_play.draw
+      draw
+      @window.noutrefresh
 
-    # Display stat in window
-    window.addstr(stat)
-    window.noutrefresh
+      calculate_speed
+
+      unless @in_play.move_down((Time.now - start_time) / @speed)
+        assign_next_piece
+        create_piece
+        display_next_piece(content[:next_window])
+        @game_over = !@object_array[0].all?(&:zero?)
+        return @score if @game_over
+      end
+
+      user_input
+      remove_lines
+      calculate_level
+      calculate_score
+      stats(content[:lines_window], @lines_cleared)
+      stats(content[:lvl_window], @level)
+      stats(content[:score_window], @score)
+
+      Curses.doupdate
+
+      sleep([0, (1 / 60) - (Time.now - start_time)].max)
+    end
   end
 end

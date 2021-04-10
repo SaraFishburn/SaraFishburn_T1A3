@@ -43,4 +43,3 @@ def reset_json(file, highscores)
   # Write array to json file
   File.write(file, JSON.dump(highscores))
 end
-
