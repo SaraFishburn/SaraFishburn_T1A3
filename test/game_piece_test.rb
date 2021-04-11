@@ -10,7 +10,7 @@ class GamePieceTest < Test::Unit::TestCase
   end
 
   # Test that when genearted, the game pieces exist and are not nil
-  def test_new_instance
+  def test_new_game_piece_instance
     [IPiece, JPiece, LPiece, OPiece, SPiece, TPiece, ZPiece].each do |piece_class|
       new_piece = piece_class.new(@game_board.object_array, @game_board.window)
       assert_not_nil(new_piece)

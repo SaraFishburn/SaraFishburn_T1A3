@@ -23,7 +23,8 @@ def controls
     'ROTATE L' => 'z',
     'LEFT' => '    ←',
     'RIGHT' => '   →',
-    'DROP' => '    ↓'
+    'DROP' => '    ↓',
+    'EXIT' => 'CTRL+C'
   }
 end
 

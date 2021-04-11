@@ -15,7 +15,7 @@ class GameBoard
   attr_reader :object_array, :current_piece, :next_piece, :window, :score
   attr_accessor :deleted_indexes, :level, :lines_cleared
 
-  def initialize(window, game_board_width = 20, game_board_height = 40)
+  def initialize(window, start_level = 0, next_piece_display = 1, game_board_width = 20, game_board_height = 40)
     @window = window
     @game_board_width = game_board_width
     @object_array = Array.new(game_board_height) { [0] * @game_board_width }
@@ -24,7 +24,9 @@ class GameBoard
       y: 0
     }
     @score = 0
-    @level = 0
+    @next_piece_display = next_piece_display
+    @start_level = start_level
+    @level = start_level
     @lines_cleared = 0
     @pieces = [IPiece, JPiece, LPiece, OPiece, SPiece, TPiece, ZPiece]
 
@@ -118,7 +120,7 @@ class GameBoard
   # Method to calculate the current game level
   def calculate_level
     # Increase level for every 10 lines cleared
-    @level = (@lines_cleared / 10).floor
+    @level = @start_level + (@lines_cleared / 10).floor
   end
 
   # Method to calculate the current game score
@@ -153,6 +155,8 @@ class GameBoard
 
   # Method to display the next piece in the next window
   def display_next_piece(next_window)
+    return if @next_piece_display == 1
+
     # Remove current contents of next window
     next_window.erase
 

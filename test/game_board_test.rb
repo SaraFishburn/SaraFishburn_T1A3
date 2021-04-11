@@ -8,12 +8,12 @@ class GamePieceTest < Test::Unit::TestCase
   end
 
   # Test that when genearted, the game pieces exist and are not nil
-  def test_new_instance
+  def test_new_game_board_instance
     new_board = GameBoard.new(nil)
     assert_not_nil(new_board)
   end
 
-  # Test that the score alculation method produces the correct figure
+  # Test that the score calculation method produces the correct figure
   def test_calculate_score
     @game_board.deleted_indexes = [1, 2]
     @game_board.level = 5
@@ -33,7 +33,7 @@ class GamePieceTest < Test::Unit::TestCase
     )
   end
 
-  # Test that the level alculation method produces the correct figure
+  # Test that the level calculation method produces the correct figure
   def test_calculate_level
     @game_board.lines_cleared = 67
     @game_board.calculate_level

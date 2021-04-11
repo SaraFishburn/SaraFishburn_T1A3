@@ -5,6 +5,7 @@ require 'curses'
 require 'json'
 require 'ordinal'
 require 'tty-file'
+require 'os'
 
 # Import supporting files
 require_relative 'classes/game_board'
@@ -51,11 +52,21 @@ begin
   # Display the welcome screen
   welcome_screen(tetris_window)
 
+  if OS.mac?
+    spawn('afplay ./tetris_theme.mp3')
+  elsif OS.posix?
+    spawn('mpg123 ./tetris_theme.mp3')
+  elsif OS.windows?
+    require 'win32/sound'
+    Win32.Sound.play('./tetris_theme.mp3')
+  end
+
   # Create a loop to play the game and start a new game on game over
   while tetris_window.nodelay = true
 
     # Create GameBoard instance
-    game_board = GameBoard.new(tetris_window)
+    game_board = GameBoard.new(tetris_window, [0, ARGV[0].to_i].max, ARGV[1].to_i)
+
     final_score = game_board.fall(content)
 
     # Interrupt flow and wait for user input

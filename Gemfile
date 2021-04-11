@@ -13,3 +13,7 @@ gem 'test-unit', '~> 3.4'
 gem 'json', '~> 2.5'
 
 gem "tty-file", "~> 0.10.0"
+
+gem "os", "~> 1.1"
+
+gem "win32-sound", "~> 0.6.2"
