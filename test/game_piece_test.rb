@@ -2,13 +2,14 @@
 
 require 'test/unit'
 require_relative '../classes/game_board'
-require_relative '../classes/i_piece'
 
+# Test class to check that elements of the GamePiece class are working as expected
 class GamePieceTest < Test::Unit::TestCase
   def setup
     @game_board = GameBoard.new(nil)
   end
 
+  # Test that when genearted, the game pieces exist and are not nil
   def test_new_instance
     [IPiece, JPiece, LPiece, OPiece, SPiece, TPiece, ZPiece].each do |piece_class|
       new_piece = piece_class.new(@game_board.object_array, @game_board.window)
@@ -16,6 +17,7 @@ class GamePieceTest < Test::Unit::TestCase
     end
   end
 
+  # Test that the clockwise rotation of a game piece re-arranges the piece array as expected
   def test_rotate_r
     new_i_piece = IPiece.new(@game_board.object_array, @game_board.window)
     new_i_piece.rotate_r
@@ -48,6 +50,7 @@ class GamePieceTest < Test::Unit::TestCase
     )
   end
 
+  # Test that the anti-clockwise rotation of a game piece re-arranges the piece array as expected
   def test_rotate_l
     new_i_piece = IPiece.new(@game_board.object_array, @game_board.window)
     new_i_piece.rotate_l

@@ -11,3 +11,5 @@ gem 'ordinal', '~> 1.0'
 gem 'test-unit', '~> 3.4'
 
 gem 'json', '~> 2.5'
+
+gem "tty-file", "~> 0.10.0"

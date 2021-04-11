@@ -12,7 +12,8 @@ require_relative 'z_piece'
 class GameBoard
   # Draw module displays a given array to the tetris window
   include Draw
-  attr_reader :object_array, :current_piece, :next_piece, :window
+  attr_reader :object_array, :current_piece, :next_piece, :window, :score
+  attr_accessor :deleted_indexes, :level, :lines_cleared
 
   def initialize(window, game_board_width = 20, game_board_height = 40)
     @window = window
@@ -133,6 +134,7 @@ class GameBoard
     when 4
       @score += 1200 * (@level + 1)
     end
+    @score
   end
 
   # Method to display the game stats to their respective windows
@@ -175,7 +177,6 @@ class GameBoard
     display_next_piece(content[:next_window])
     loop do
       start_time = Time.now
-      
       @window.erase
       @ghost_piece.draw
       @in_play.draw

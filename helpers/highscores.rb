@@ -43,3 +43,12 @@ def reset_json(file, highscores)
   # Write array to json file
   File.write(file, JSON.dump(highscores))
 end
+
+# Populates an empty json file with a new empty highscores array
+def create_json(empty_file)
+  highscores_array = []
+  10.times do
+    highscores_array += [{ name: '---', score: '000' }]
+  end
+  File.write(empty_file, JSON.dump(highscores_array))
+end
